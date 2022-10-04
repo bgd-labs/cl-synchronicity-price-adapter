@@ -31,6 +31,11 @@ contract CLSynchronicityPriceAdapter is ICLSynchronicityPriceAdapter   {
      * @notice achive desired number of resulting decimals.
      */
     int256 public immutable DECIMALS_MULTIPLIER;
+
+    /**
+     * @notice Maximum number of resulting and feed decimals
+     */
+    uint8 public constant MAX_DECIMALS = 18;
     
     constructor(
         address baseToPegAggregatorAddress,
@@ -39,6 +44,10 @@ contract CLSynchronicityPriceAdapter is ICLSynchronicityPriceAdapter   {
     ) {
         BASE_TO_PEG = IChainlinkAggregator(baseToPegAggregatorAddress);
         ASSET_TO_PEG = IChainlinkAggregator(asseToPegAggregatorAddress);
+
+        if (decimals > MAX_DECIMALS) revert DecimalsAboveLimit();
+        if (BASE_TO_PEG.decimals() > MAX_DECIMALS) revert DecimalsAboveLimit();
+        if (ASSET_TO_PEG.decimals() > MAX_DECIMALS) revert DecimalsAboveLimit();
 
         DECIMALS = decimals;
 
