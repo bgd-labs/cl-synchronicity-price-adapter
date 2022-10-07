@@ -15,11 +15,12 @@ project.
 ### Overview
 
 This review covers updates to the oracle mechanisms associated with the `CLSynchronicityPriceAdapter` contract.
-To reduce the impact of lag time between different stable coins a price adapter is being used.
+The purpose of the contract is to reduce the impact of lag time when multiple stable coins (USD) have different price feeds.
+The updated price adapters will share a Base to USD price feed and have a unique Asset to USD feed.
 
 The price adapter uses two feeds to establish the price for an asset.
-- Asset to USD price
-- Base to USD price
+- Asset to USD price (e.g. USDC to USD)
+- Base to USD price (e.g. ETH to USD)
 
 The final calculation is:
 
@@ -43,13 +44,13 @@ One informational findings and two miscellaneous findings were found during the 
 There are three potential overflows during the `int256` castings in `_calcDecimalsMultiplier()`.
 Casting from an `uint256` to a `int256` will cause an overflow if the left most bit of the `uint256` variable is a `1` bit.
 
-This issue is raised as information since it would require the decimals of one of the Chainlink feeds or the current contract to be 77.
+This issue is raised as informational since it would require the decimals of one of the Chainlink feeds or the current contract to be 77.
 A Chainlink feed will have a default of 8 decimal places thus this implies a malicious configuration.
 
-Each of the three casts from `uint256` to `int256` here will overflow if the exponent is 77, as 10^77 is greater than 2^255 and will have its left most bit set to `1`.
+Each of the three casts from `uint256` to `int256` in the following code will overflow if the exponent is 77, as 10^77 is greater than 2^255 and will have its left most bit set to `1`.
 The result is an overflow causing `multiplier` to be negative:
 
-```
+```solidity
         int256 multiplier = int256(10 ** resultDecimals);
         if (assetToPegDecimals < baseToPegDecimals) {
             multiplier *= int256(10 ** (baseToPegDecimals - assetToPegDecimals));
