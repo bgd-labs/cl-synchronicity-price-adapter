@@ -39,11 +39,11 @@ contract CLSynchronicityPriceAdapter is ICLSynchronicityPriceAdapter   {
     
     constructor(
         address baseToPegAggregatorAddress,
-        address asseToPegAggregatorAddress,
+        address assetToPegAggregatorAddress,
         uint8 decimals
     ) {
         BASE_TO_PEG = IChainlinkAggregator(baseToPegAggregatorAddress);
-        ASSET_TO_PEG = IChainlinkAggregator(asseToPegAggregatorAddress);
+        ASSET_TO_PEG = IChainlinkAggregator(assetToPegAggregatorAddress);
 
         if (decimals > MAX_DECIMALS) revert DecimalsAboveLimit();
         if (BASE_TO_PEG.decimals() > MAX_DECIMALS) revert DecimalsAboveLimit();
