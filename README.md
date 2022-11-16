@@ -25,6 +25,7 @@ Same idea can be used for other Aave markets where `USD` is base currency to peg
 - Price adapter smart contract where `ChainlinkAggregator` addresses for `Asset / USD` and `ETH / USD` are set.
 - Using this two feeds, it calculates the price for pair `Asset / ETH`. 
 - Returning price is calculated with 18 decimals.
+- If `Asset / USD` feed decimals is bigger than the sum of resulting decimals and `ETH / USD` feed decimals, then constructor will revert with `DecimalsMultiplierIsZero` error.
 
 ### Governance Payloads
 
