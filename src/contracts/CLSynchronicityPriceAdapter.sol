@@ -58,6 +58,8 @@ contract CLSynchronicityPriceAdapter is ICLSynchronicityPriceAdapter   {
             DECIMALS
           );
 
+        /// DECIMALS_MULTIPLIER is zero if the following is true:
+        /// DECIMALS + BASE_TO_PEG.decimals() < ASSET_TO_PEG.decimals()
         if (DECIMALS_MULTIPLIER == 0) revert DecimalsMultiplierIsZero();
     }
 
