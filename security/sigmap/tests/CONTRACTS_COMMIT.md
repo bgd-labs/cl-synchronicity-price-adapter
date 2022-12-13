@@ -1,0 +1,3 @@
+The contracts `contracts/CLSynchronicityPriceAdapter.sol` and `interfaces/ICLSynchronicityPriceAdapters.sol` were taken at commit [8311402](https://github.com/bgd-labs/cl-synchronicity-price-adapter/commit/83114026d77f00e2013bfdf957f67a711eb203ad) (on branch `check-decimals`).
+
+The folder `contracts/aave-address-book` was taken at commit [9e5f793](https://github.com/bgd-labs/aave-address-book/commit/9e5f7938acbf9808e097e9c14aefd92b0a631272) with unnecessary files removed.
