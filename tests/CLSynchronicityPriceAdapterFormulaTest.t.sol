@@ -79,16 +79,40 @@ contract StablecoinPriceAdapterFormulaTest is Test {
     assertEq(price, 0);
   }
 
-  function testConstructorIsRevertedWhenDecimalsIsDifferent() public {
+  function testConstructorIsRevertedWhenBaseDecimalsGtMax() public {
+    address mockAggregator1 = address(0);
+    address mockAggregator2 = address(1);
+
+    _setMockPrice(mockAggregator1, 1000, 19);
+    _setMockPrice(mockAggregator2, 10000, 4);
+
+    vm.expectRevert(ICLSynchronicityPriceAdapter.DecimalsAboveLimit.selector);
+
+    new CLSynchronicityPriceAdapterBaseToPeg(mockAggregator1, mockAggregator2, 4, 'MOCK');
+  }
+
+  function testConstructorIsRevertedWhenAssetDecimalsGtMax() public {
+    address mockAggregator1 = address(0);
+    address mockAggregator2 = address(1);
+
+    _setMockPrice(mockAggregator1, 1000, 3);
+    _setMockPrice(mockAggregator2, 10000, 19);
+
+    vm.expectRevert(ICLSynchronicityPriceAdapter.DecimalsAboveLimit.selector);
+
+    new CLSynchronicityPriceAdapterBaseToPeg(mockAggregator1, mockAggregator2, 4, 'MOCK');
+  }
+
+  function testConstructorIsRevertedWhenDecimalsGtMax() public {
     address mockAggregator1 = address(0);
     address mockAggregator2 = address(1);
 
     _setMockPrice(mockAggregator1, 1000, 3);
     _setMockPrice(mockAggregator2, 10000, 4);
 
-    vm.expectRevert(ICLSynchronicityPriceAdapter.DecimalsNotEqual.selector);
+    vm.expectRevert(ICLSynchronicityPriceAdapter.DecimalsAboveLimit.selector);
 
-    new CLSynchronicityPriceAdapterBaseToPeg(mockAggregator1, mockAggregator2, 4, 'MOCK');
+    new CLSynchronicityPriceAdapterBaseToPeg(mockAggregator1, mockAggregator2, 19, 'MOCK');
   }
 
   function _setMockPrice(address mockAggregator, int256 mockPrice, uint256 decimals) internal {

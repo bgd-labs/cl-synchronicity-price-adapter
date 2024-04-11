@@ -29,6 +29,16 @@ contract CLSynchronicityPriceAdapterBaseToPeg is ICLSynchronicityPriceAdapter {
   uint8 public immutable DECIMALS;
 
   /**
+   * @notice Number of decimals of the BASE / PEG feed
+   */
+  uint8 public immutable BASE_TO_PEG_DECIMALS;
+
+  /**
+   * @notice Number of decimals of the ASSET / PEG feed
+   */
+  uint8 public immutable ASSET_TO_PEG_DECIMALS;
+
+  /**
    * @notice Maximum number of resulting and feed decimals
    */
   uint8 public constant MAX_DECIMALS = 18;
@@ -49,11 +59,12 @@ contract CLSynchronicityPriceAdapterBaseToPeg is ICLSynchronicityPriceAdapter {
   ) {
     BASE_TO_PEG = IChainlinkAggregator(baseToPegAggregatorAddress);
     ASSET_TO_PEG = IChainlinkAggregator(assetToPegAggregatorAddress);
+    BASE_TO_PEG_DECIMALS = BASE_TO_PEG.decimals();
+    ASSET_TO_PEG_DECIMALS = ASSET_TO_PEG.decimals();
 
     if (decimals > MAX_DECIMALS) revert DecimalsAboveLimit();
-    if (BASE_TO_PEG.decimals() > MAX_DECIMALS) revert DecimalsAboveLimit();
-
-    if (BASE_TO_PEG.decimals() != ASSET_TO_PEG.decimals()) revert DecimalsNotEqual();
+    if (BASE_TO_PEG_DECIMALS > MAX_DECIMALS) revert DecimalsAboveLimit();
+    if (ASSET_TO_PEG_DECIMALS > MAX_DECIMALS) revert DecimalsAboveLimit();
 
     DECIMALS = decimals;
     _description = pairDescription;
@@ -78,6 +89,8 @@ contract CLSynchronicityPriceAdapterBaseToPeg is ICLSynchronicityPriceAdapter {
       return 0;
     }
 
-    return (assetToPegPrice * int256(10 ** DECIMALS)) / (baseToPegPrice);
+    return
+      (assetToPegPrice * int256(10 ** DECIMALS) * int256(10 ** BASE_TO_PEG_DECIMALS)) /
+      (baseToPegPrice * int256(10 ** ASSET_TO_PEG_DECIMALS));
   }
 }
